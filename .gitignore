@@ -1,0 +1,3 @@
+.DS_Store
+context/course_materials/*
+!context/course_materials/.gitkeep

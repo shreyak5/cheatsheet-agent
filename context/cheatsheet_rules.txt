@@ -1,0 +1,9 @@
+- Double sided cheatsheet on an A4 page size.
+- Black and white ink, no colour.
+- Should section the topics per lecture.
+- Should prioritise formulae, but also include lists and topics that are hard to remember.
+- Do not use any information that is not present in the course materials.
+- Stick to a 2 column format.
+- Avoid empty space, try to fill it to the brim with important information.
+- Stick to a fixed font size of 7.4pt
+- Don't waste space on the page with a header saying "course name" or "cheatsheet"

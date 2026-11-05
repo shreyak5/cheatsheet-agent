@@ -1,0 +1,27 @@
+Goal: 
+Your goal is to create a single page, double-sided cheatsheet for a theory examination using the course content available to you.
+
+Sources:
+All content from the course is provided under `context/course_materials/`.
+It contains lecture notes - each labelled in order, which you will use to fetch content. 
+It also contains a mock exam paper, which you will use to understand what type of information should be kept in the cheatsheet.
+`context/cheatsheet_rules.txt` contains the set of guidelines to follow when creating the cheatsheet.
+Do NOT read outputs/ and refer to previously generated outputs when created a new cheatsheet.
+
+Output:
+The output should be a pdf with two pages. 
+Each page should be A4 sized.
+The output file should be named `cheatsheet.pdf` and should live under outputs/<timestamp>/.
+
+Standard:
+The minimum pass criteria for acceptance is:
+- 2 paged document.
+- A4 size
+- each lecture has a separate section
+- the lectures are presented in order
+If any of these fail, assume that the output will be rejected.
+
+Additional Instructions:
+You must document each step you take during the process and save it under logs in any format of your choice.
+Ensure that you log the time at each step.
+Each attempt at this task should be saved separately with a timestamp of the start time.

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Statistical Information Theory – Cheatsheet</title>
+<style>
+@page { size: A4; margin: 0; }
+*{box-sizing:border-box}
+html{--fs1:8.3pt;--fs2:7.4pt}
+html,body{margin:0;padding:0;background:#fff;color:#000}
+body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:var(--fs,6.3pt);line-height:1.17}
+.page{width:210mm;height:297mm;padding:5mm 5mm 4mm 5mm;overflow:hidden;page-break-after:always;position:relative}
+.page:last-child{page-break-after:auto}
+.cols{column-count:2;column-gap:4mm;column-rule:0.4pt solid #000;column-fill:auto;height:287mm}
+h1{font-size:1.25em;margin:0 0 1mm;text-align:center;letter-spacing:.3pt;border-bottom:0.8pt solid #000;padding-bottom:.5mm}
+h2{background:#000;color:#fff;font-size:1.1em;margin:1.4mm 0 .6mm;padding:.3mm 1.2mm;break-after:avoid;letter-spacing:.2pt}
+h2:first-child{margin-top:0}
+h3{font-size:1em;margin:.9mm 0 .1mm;border-bottom:0.3pt solid #000;break-after:avoid;text-transform:uppercase;letter-spacing:.2pt}
+p{margin:.25mm 0}
+ul{margin:.2mm 0;padding-left:2.6mm}
+li{margin:0}
+.f{display:block;margin:.35mm 0;padding:.2mm 1mm;border:0.4pt solid #000;background:#eee;font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.06em}
+.m{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-size:1.06em}
+b{font-weight:700}
+i{font-style:italic}
+table{border-collapse:collapse;width:100%;margin:.3mm 0}
+td,th{border:0.3pt solid #000;padding:0 .7mm;text-align:left;vertical-align:top}
+th{background:#ddd}
+.sm{font-size:.93em}
+.w{border:0.6pt dashed #000;padding:0 1mm;margin:.4mm 0}
+</style></head><body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page" style="font-size:var(--fs1)">
+<h1>STATISTICAL INFORMATION THEORY — CHEATSHEET (side 1: Lectures 1–4)</h1>
+<div class="cols">
+
+<h2>LECTURE 1 · INTRODUCTION &amp; PROBABILITY RECAP</h2>
+<ul>
+<li><b>Info theory = art of redundancy</b>: <i>remove</i> it when it hurts (compression/source coding), <i>add</i> it when it helps (channel coding). Info &amp; statistics = two sides of one coin. Course: source coding → channel coding → statistics/geometry.</li>
+<li><b>Source coding</b>: map data symbols → {0,1}; want <i>short</i> + <i>easily decodable</i>; frequent symbols get shorter words (e.g. B→0, R→10, W→11: 1.56 bit/px vs 3 one-hot).</li>
+<li><b>Channel</b>: <b>BSC</b> flips bit w.p. <i>f</i>. Repetition code R<sub>3</sub>: 0→000, 1→111, r = t + n; optimal decoder = Bayes: ŝ = argmax<sub>s</sub> P(r|s)P(s) (here majority vote). p<sub>b</sub> = 3f² (1−f) + f³ ≈ 3f²: error O(f)→O(f²) but rate ÷3. Shannon: error-free comms at <b>non-zero rate</b> is possible (rate &lt; C).</li>
+<li><b>Logs</b>: log=log₂, ln=log<sub>e</sub>; log(xy)=log x+log y; log(xⁿ)=n log x; log<sub>b</sub>x = log<sub>a</sub>x / log<sub>a</sub>b; log 1=0; log(x+y) does NOT simplify; ln2≈0.69; log(1/8)=−3.</li>
+<li><b>Convex</b> (“convex-down”, ∪): f(λx₁+(1−λ)x₂) ≤ λf(x₁)+(1−λ)f(x₂); prove via f″≥0 or convexity-preserving ops (affine map f(Ax+b); non-neg. weighted sum). log and −x log x are <b>concave</b> (∩).</li>
+<li><b>RV</b> X: Ω→E measurable fn. P(ω)≥0, P(Ω)=1. Discrete: pmf, Σp=1. Continuous: pdf, ∫p=1 (<i>density can be &gt;1</i>). Notation: X rv, x realisation, 𝒳 alphabet.</li>
+<li><b>Expectation</b> E<sub>p</sub>[f(X)] = Σ<sub>x</sub> p(x)f(x); Var = E[X²]−µ². <b>i.i.d.</b> = independent + identically distributed.</li>
+<li><b>Jensen</b> (f convex ∪): <span class="m">E[f(x)] ≥ f(E[x])</span>; (concave ∩ reverses: E[log x] ≤ log E[x]).</li>
+<li><b>Gaussian</b> <span class="m">N(µ,Σ): p(x) = (2π)<sup>−d/2</sup>|Σ|<sup>−1/2</sup> exp(−½(x−µ)ᵀΣ⁻¹(x−µ))</span>; 68.3/95.5/99.7% within 1/2/3σ.</li>
+</ul>
+
+<h2>LECTURE 2 · ENTROPY &amp; SOURCE CODING THEOREM</h2>
+<span class="f">h(x) = log 1/p(x) &nbsp; (surprisal) &nbsp;|&nbsp; H(X) = Σ p(x) log 1/p(x) = E[h(X)]</span>
+<ul>
+<li>Units: log₂ → bits; ln → nats. Binary entropy <span class="m">H₂(p) = −p log p − (1−p) log(1−p)</span> (max 1 bit at p=½). Convention <b>0 log 0 = 0</b>. Unlikely outcomes carry more info.</li>
+<li><b>Bounds</b>: <span class="m">0 ≤ H(X) ≤ log|𝒳|</span>. Min: Kronecker δ (p<sub>i</sub>=1). Max: uniform. Independent X,Y: <b>h and H are additive</b>: H(X,Y)=H(X)+H(Y).</li>
+<li><b>Shannon axioms</b> for surprisal i(p): (1) i(1)=0; (2) di/dp ≤ 0 (rarer = more surprising); (3) i(pq)=i(p)+i(q) ⇒ only i(p) = −log<sub>b</sub> p.</li>
+<li>Guessing games: uniform ⇒ h(x)=#yes/no questions = binary-encoding length (63-game: 6 bit). Submarine: total info always log 64 = 6 bit however many misses (Σ log(64/63)+…+log(n+1)/n + log n). Info = probability-mass exclusion (Hartley). <b>Design experiments with evenly probable outcomes.</b></li>
+<li><b>Differential entropy</b> <span class="m">H(X) = −∫f log f dx</span>. Derived from bins Δ: H(X<sup>Δ</sup> )= −Σ Δf log f − <b>log Δ</b> (diverges as Δ→0; drop it). Can be <b>negative</b>; U[0,a]: H = log a (2<sup>H</sup> = volume).</li>
+<li><b>Gaussian</b>: h(x) = ln(σ√2π) + ½((x−µ)/σ)² (≈ scaled MSE: lower by moving µ→x or (sometimes) raising σ). <span class="f">H(N(µ,Σ)) = ½ ln|2πeΣ| &nbsp; (1D: ½ ln 2πeσ² )</span></li>
+<li>Entropy = generalised variance; ≈ log-volume of iso-probability contours.</li>
+</ul>
+<h3>Source coding theorem (SCT)</h3>
+<ul>
+<li><b>Code</b> C: 𝒳→𝒟*; ℓ(x) codeword length; L=E[ℓ]. |𝒟|=2 binary, d-ary. Raw bit content = log|𝒳| (use <b>⌈log|𝒳|⌉</b>, “extra bit” if not power of 2).</li>
+<li><b>WLLN</b>: Ȳₙ=(1/n)ΣXᵢ → µ in prob.; E[Ȳ]=µ, Var(Ȳ)=σ²/n. High-dim Gaussian: points in a thin shell, Std(r²)/E[r²]=O(1/√n)→0.</li>
+<li><b>AEP</b>: X₁..Xₙ i.i.d. ⇒ <span class="m">−(1/n) log p(x₁..xₙ) → H(X)</span> (by LLN). All typical samples ≈ equiprobable.</li>
+<li><b>Typical set</b> A<sub>ε</sub><sup>(n)</sup>: 2<sup>−n(H+ε)</sup> ≤ p(xⁿ) ≤ 2<sup>−n(H−ε)</sup>. <b>(1)</b> xⁿ∈A ⇒ |−(1/n)log p(xⁿ) − H| ≤ ε, p≈2<sup>−nH</sup>; <b>(2)</b> P(xⁿ∈A) &gt; 1−ε; <b>(3)</b> |A| ≤ 2<sup>n(H+ε)</sup>; <b>(4)</b> |A| ≥ (1−ε)2<sup>n(H−ε)</sup>. So |A|≈2<sup>nH</sup> out of |𝒳|ⁿ. (Proofs: 3 by Σp=1≥|A|·2<sup>−n(H+ε)</sup>; 4 by 1−ε&lt;P(A)≤|A|2<sup>−n(H−ε)</sup>.) Biased coin p: typical strings have ≈ fraction p of 1s (binomial vs p<sup>r</sup>(1−p)<sup>n−r</sup> tradeoff). Entropy = fraction of log-volume occupied: log|A|/log|𝒳|ⁿ = H/log|𝒳|.</li>
+<li><span class="f">SCT: for any ε&gt;0, large n ⇒ ∃ invertible code with E[ℓ(Xⁿ)/n] ≤ H(X)+ε. Converse: no invertible code has L &lt; H(X).</span> (achievability + converse.)</li>
+<li><b>Achievability proof</b>: flag bit 0 + index in A (ℓ ≤ 1+⌈log|A|⌉ ≤ n(H+ε)+2) else flag bit 1 + index in 𝒳ⁿ (ℓ ≤ n log|𝒳|+2); L ≤ n(H+ε′), ε′=ε+ε log|𝒳|+2/n. <b>Converse</b>: sub-typical set C with |C|≈2<sup>n(H−κ)</sup> has P ≈ 2<sup>−nκ</sup>→0.</li>
+</ul>
+
+<h2>LECTURE 3 · SYMBOL CODES, KL DIVERGENCE</h2>
+<ul>
+<li><b>No free lunch</b>: no compressor shortens every string. Lossy (maps some strings together) vs lossless (shortens most, lengthens some). Block codes need infinite blocks → use symbol codes.</li>
+</ul>
+<table class="sm"><tr><th>Code type</th><th>Definition</th></tr>
+<tr><td>Nonsingular</td><td>x≠x′ ⇒ C(x)≠C(x′) (symbol-level invertible)</td></tr>
+<tr><td>Extension C*</td><td>C*(x₁..xₙ)=C(x₁)…C(xₙ)</td></tr>
+<tr><td>Uniquely decodable</td><td>C* nonsingular (Morse: nonsingular, <i>not</i> UD)</td></tr>
+<tr><td>Prefix (instantaneous)</td><td>no codeword is a prefix of another; tree leaves = codewords</td></tr></table>
+<p class="sm">Prefix ⊂ UD ⊂ nonsingular. Invertible ≠ easy to invert (RSA: a·b). Adding a word removes all its descendants.</p>
+<span class="f">Kraft: prefix code ⇔ Σᵢ D<sup>−ℓᵢ</sup> ≤ 1 &nbsp;(also holds for all UD codes)</span>
+<p class="sm"><b>Proof</b>: ℓ<sub>max</sub> tree has ≤ D<sup>ℓmax</sup> leaves; word of length ℓᵢ owns D<sup>ℓmax−ℓᵢ</sup> of them ⇒ ΣD<sup>ℓmax−ℓᵢ</sup> ≤ D<sup>ℓmax</sup>. “Codeword supermarket”: short words cost more; budget =1. Satisfying Kraft means a prefix code with those lengths exists.</p>
+<h3>Optimal codes (Lagrange)</h3>
+<p class="sm">Lagrange: min f s.t. g=0 ⇒ ℒ=f+λg, ∇<sub>x,λ</sub>ℒ=0. Min Σpᵢℓᵢ s.t. ΣD<sup>−ℓᵢ</sup>=1: ∂ℒ/∂ℓᵢ = pᵢ − λD<sup>−ℓᵢ</sup>ln D = 0 ⇒ λ=1/ln D ⇒</p>
+<span class="f">ℓᵢ* = −log<sub>D</sub> pᵢ &nbsp;⇒&nbsp; L* = H<sub>D</sub>(X) &nbsp;(entropy = min avg length of any symbol code)</span>
+<p class="sm">Needs ℓ integer in practice ⇒ round up ⌈−log<sub>D</sub> pᵢ⌉ (assumed continuous & equality in derivation). Duality: pᵢ ∝ D<sup>−ℓᵢ</sup> = “implicit probabilities” of a code.</p>
+<ul><li><b>Huffman</b>: repeatedly merge the 2 least-probable symbols into one; read codes off the tree. Optimal: L(C*) ≤ L(C′) for any UD code. Ex: p={.25,.25,.2,.15,.15} → ℓ={2,2,2,3,3}, L=2.3.</li></ul>
+<h3>Wrong code · cross-entropy · KL</h3>
+<span class="f">H(p,q) = −Σ p log q &nbsp;(len. of q-optimal code on p-data) <br>D<sub>KL</sub>(p‖q) = Σ p log (p/q) = H(p,q) − H(p) ≥ 0 &nbsp;(extra cost)</span>
+<ul>
+<li><b>Gibbs’ inequality</b>: D<sub>KL</sub> ≥ 0, =0 iff p=q. Proof: −D = Σp log(q/p) ≤ log Σ p·q/p = log 1 = 0 (Jensen, log concave); convex in q ⇒ unique minimum at p=q.</li>
+<li>KL is <b>asymmetric</b> (not a distance); =∞ if ∃x: q(x)=0, p(x)&gt;0. D(p‖u) = log|𝒳| − H(p) ⇒ H ≤ log|𝒳|. Ex: D(p₁‖p₂)=0.25, D(p₂‖p₃)=∞, D(p₃‖p₂)=0.5, D(p₃‖p₁)=1 bit. Continuous KL ≥0 too (log Δ cancels).</li>
+<li><b>Gaussians</b>: <span class="m">D<sub>KL</sub>(p‖q) = ½[σ²<sub>p</sub>/σ²<sub>q</sub> − 1 − ln(σ²<sub>p</sub>/σ²<sub>q</sub>) + (µ<sub>p</sub>−µ<sub>q</sub>)²/σ²<sub>q</sub>]</span>; H(p,q) = ½ln 2πσ²<sub>q</sub> + [σ²<sub>p</sub>+(µ<sub>p</sub>−µ<sub>q</sub>)²]/2σ²<sub>q</sub>. Narrow Gaussians: KL grows faster with Δµ.</li>
+<li><b>MLE</b>: θ* = argmax p(x;θ); log-lik 𝓛=(1/n)Σ ln p(xᵢ;θ) → E<sub>p</sub>[ln p(x;θ)] (n→∞) ⇒ <b>ML = min KL = min code length</b>. Gaussian mean: µ*=(1/n)Σxᵢ.</li>
+<li><b>Good compressor = good predictor</b>: code ℓ ⇒ q=2<sup>−ℓ</sup>/z, z=Σ2<sup>−ℓ</sup> (Kraft number ≤1). Extra cost E<sub>p</sub>[ℓ−ℓ*] = log(1/z) + D<sub>KL</sub>(p‖q) ≥ 0; zero iff Kraft equality &amp; p=q.</li>
+</ul>
+
+<h2>LECTURE 4 · JOINT ENTROPY &amp; MUTUAL INFORMATION</h2>
+<ul>
+<li><b>Joint RVs</b> = different partitions of Ω; p(x,y)=measure of X⁻¹(x)∩Y⁻¹(y). Marginal p(x)=Σ<sub>y</sub>p(x,y); conditional p(x|y)=p(x,y)/p(y). Product p(x,y)=p(x|y)p(y); sum p(x)=Σp(x|y)p(y); Bayes p(x|y)=p(y|x)p(x)/p(y).</li>
+<li><b>Independence</b>: X⊥Y ⇔ p(x,y)=p(x)p(y) (⇒p(x|y)=p(x)); cond.: X⊥Y|Z ⇔ p(x,y|z)=p(x|z)p(y|z). Conditioning can create/destroy independence: Y=f(X),Z=g(Y): X⊥̸Z but X⊥Z|Y; Z=X⊕Y (fair coins): X⊥Z but X⊥̸Z|Y.</li>
+<li><b>Bayesian network</b>: p(X)=∏ₖ p(Xₖ|pa<sub>k</sub>). <b>Markov chain</b> X−Y−Z: p(Xₜ|Xₜ₋₁..X₁)=p(Xₜ|Xₜ₋₁) (⇒X⊥Z|Y); order-p: depends on last p.</li>
+</ul>
+<span class="f">H(X,Y) = −Σ p(x,y) log p(x,y) &nbsp; H(X|Y) = Σ<sub>y</sub> p(y)H(X|Y=y) <br>Chain rule: H(X,Y) = H(X|Y) + H(Y) = H(Y|X) + H(X)</span>
+<ul>
+<li>H(X|Y) ≥ 0 (disc.); ≤ log|𝒳|; =0 if X=f(Y); =H(X) if X⊥Y. <b>Invariance</b>: discrete H invariant under bijections (H(X|Y)=H(Y|X)=0 ⇒ H(X)=H(Y)).</li>
+<li><b>Cond. KL</b>: D(p(X|Y)‖q(X|Y)) = Σ<sub>y</sub> p(y) D(p(X|y)‖q(X|y)) ≥ 0.</li>
+<li><b>Stationary process</b> (p(X₁..Xₜ)=p(X₁₊ₛ..Xₜ₊ₛ)). <b>Entropy rate</b> h = lim (1/n)H(X₁..Xₙ) = lim H(Xₙ|X₁..Xₙ₋₁) (equal for stationary); conditioning on more history never increases it; reaches h at Markov order p. Coin-in-a-box (flip w.p. p): h = H₂(p). Stream codes (Lempel–Ziv/zip) use entropy rate.</li>
+</ul>
+<span class="f">I(X;Y) = Σ p(x,y) log [p(x,y)/(p(x)p(y))] = D<sub>KL</sub>(p(X,Y)‖p(X)p(Y)) <br>= H(X)+H(Y)−H(X,Y) = H(X)−H(X|Y) = H(Y)−H(Y|X)</span>
+<ul>
+<li>Symmetric; <b>I ≥ 0</b>; <b>I=0 ⇔ X⊥Y</b>; I(X;Y) ≤ min{H(X),H(Y)} (discrete). <b>Info doesn’t hurt</b>: H(X|Y) ≤ H(X) (but H(X|Y=y) may exceed H(X)).</li>
+<li><b>Cond. MI</b> I(X;Y|Z)=H(X|Z)−H(X|Y,Z)=D(p(X,Y|Z)‖p(X|Z)p(Y|Z)) ≥ 0; =0 ⇔ X⊥Y|Z. <b>MI chain rule</b>: <span class="m">I(X,Y;Z) = I(X;Z) + I(Y;Z|X)</span>.</li>
+<li><b>Data processing inequality</b>: X−Y−Z ⇒ <span class="m">I(X;Z) ≤ I(X;Y)</span> (I(X;Y,Z)=I(X;Z)+I(X;Y|Z)=I(X;Y)+I(X;Z|Y), last =0). MI invariant under bijections (even continuous).</li>
+<li><b>Venn</b>: H(X)=µ(A), H(X,Y)=µ(A∪B), H(X|Y)=µ(A\B), I=µ(A∩B). Co-information I(X;Y;Z)=H(XYZ)−H(XY)−H(YZ)−H(XZ)+H(X)+H(Y)+H(Z) can be <b>negative</b>.</li>
+<li><b>Gaussian MI</b>: <span class="f">I(X;Y) = −½ log(1−ρ²) = ½ log(σ<sub>yy</sub>/σ²<sub>y|x</sub>)</span> ; uncorrelated ≠ independent, MI captures non-linear dependence.</li>
+<li><b>MI = bound on prediction</b>: I(X;Y) = H(Y)+E[log p(y|x)] ≥ <span class="m">H(Y) + E<sub>p(x,y)</sub>[log q<sub>θ</sub>(y|x)]</span> (Gibbs); equality if p(y|x)∈Q at best θ. Mock exam 2(c): empirical avg (1/n)Σ log q(yᵢ|xᵢ) ≈ E[log q].</li>
+</ul>
+</div></div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page" style="font-size:var(--fs2)">
+<h1>STATISTICAL INFORMATION THEORY — CHEATSHEET (side 2: Lectures 5–8)</h1>
+<div class="cols">
+
+<h2>LECTURE 5 · CHANNEL CODES</h2>
+<ul>
+<li><b>DMC</b>: input alphabet 𝒳, output 𝒴, p(y|x); extended channel p(yⁿ|xⁿ)=∏p(yᵢ|xᵢ). <b>BSC(f)</b>: I(X;Y)=H(Y)−H(Y|X)=1−H₂(f) for uniform input (H(Y|X)=H₂(f)).</li>
+</ul>
+<span class="f">Capacity: C = max<sub>p(x)</sub> I(X;Y) &nbsp;(optimal p*(x) = capacity-achieving input) <br>Recipe: I = H(Y) − H(Y|X); H(Y|X)=Σ p(x)H(Y|X=x); parametrise p(X=1)=α, maximise over α∈[0,1]</span>
+<ul>
+<li><b>Noisy typewriter</b> (27 symbols, each → itself/2 neighbours w.p. ⅓): H(Y)=log27, H(Y|X)=log3, I=log9; use every 3rd letter ⇒ non-confusable inputs (disjoint output sets) ⇒ error-free. Channel AEP: 2<sup>nH(Y)</sup> outputs, 2<sup>nH(Y|X)</sup> per input ⇒ 2<sup>n(H(Y)−H(Y|X))</sup> = 2<sup>nI</sup> distinguishable messages. <b>Interpretation of C</b>: max rate (bits/channel use) for reliable (arbitrarily small error) communication.</li>
+<li><b>(n,K) block code</b>: 2<sup>K</sup> codewords of length n; <b>rate R=K/n</b>. Decoder yⁿ→ŝ. Mean block error p<sub>B</sub>=Σp(s)p(ŝ≠s|s); maximal p<sub>BM</sub>=max<sub>s</sub>p(ŝ≠s|s); bit error p<sub>b</sub>.</li>
+</ul>
+<span class="f">Noisy-channel coding thm: (1) ∀ε&gt;0, R&lt;C ∃ code (large n) with p<sub>BM</sub>&lt;ε. (2) With p<sub>b</sub> tolerated, rates up to R(p<sub>b</sub>) = C/(1−H₂(p<sub>b</sub>)) achievable. (3) Rates above R(p<sub>b</sub>) NOT achievable.</span>
+<ul>
+<li><b>Proof ingredients</b>: (i) <b>joint typicality</b> J<sub>ε</sub><sup>(n)</sup>: xⁿ typical, yⁿ typical, (xⁿ,yⁿ) typical (each within ε of H(X), H(Y), H(X,Y)). Props: ① p(xⁿ,yⁿ)≈2<sup>−nH(X,Y)</sup>; ② P(J)→1 (union bound on complements); ③ |J| ≤ 2<sup>n(H(X,Y)+ε)</sup>; ④ independent x̃ⁿ,ỹⁿ~p(xⁿ)p(yⁿ): P(∈J) ≤ <b>2<sup>−n(I(X;Y)−3ε)</sup></b>. (ii) <b>random codes</b> (sample 2<sup>nR</sup> words from p(xⁿ); average error; “weighing babies”: avg &lt;δ ⇒ some code &lt;δ). (iii) <b>typical-set decoder</b>: success iff exactly one s with (xⁿ(s),yⁿ) jointly typical. Errors: true xⁿ(s) not JT (→0 by ②) or another s′ JT: ≤(2<sup>nR</sup>−1)2<sup>−n(I−3ε)</sup> ≤ 2<sup>−n(I−R−3ε)</sup> →0 iff R&lt;I−3ε (use p* ⇒ R&lt;C−3ε). (iv) <b>expurgation</b>: drop worst half of words ⇒ p<sub>BM</sub> ≤ 2p<sub>B</sub>, rate R−1/n.</li>
+<li><b>Error detection vs correction</b>: R₂ detects 1 flip (01→?), R₃ corrects 1 flip (101→1).</li>
+<li><b>Parity</b> = XOR = sum mod 2. <b>Hamming (7,4)</b>: n=2<sup>m</sup>−1=7, K=4 data, m=3 parity; 16 codewords; parity bits at positions 1,2,4 (powers of 2): p₁d₁p₂... layout <span class="m">p₁p₂d₁p₃d₂d₃d₄</span>.<br>p₁=d₁+d₂+d₄, p₂=d₁+d₃+d₄, p₃=d₂+d₃+d₄ (mod 2).</li>
+</ul>
+<table class="sm"><tr><th>Symbol</th><th>Meaning</th></tr>
+<tr><td>s ∈ B<sup>K</sup></td><td>source (data) bits</td></tr>
+<tr><td>t = Gᵀ s mod 2</td><td>transmitted (n bits), G∈B<sup>K×n</sup> generator</td></tr>
+<tr><td>r = t + n mod 2</td><td>received = transmitted + noise</td></tr>
+<tr><td>z = H r mod 2</td><td>syndrome, H∈B<sup>m×n</sup> parity-check</td></tr></table>
+<p class="sm"><span class="m">H = [1010101 / 0110011 / 0001111]</span> (column j = j in binary, LSB first). Ht=0 for any codeword; H(t+n)=Hn ⇒ <b>syndrome = binary position of the flipped bit</b> (error in bit 3 ⇒ z=110 ⇒ 1·2⁰+1·2¹=3) ⇒ flip it back. G: data columns = I<sub>K</sub>; parity columns = data rows of Hᵀ. G=[1110000/1001100/0101010/1101001]. Systematic = data first, parity last (lecture used non-systematic).</p>
+<ul>
+<li><b>Hamming distance</b> d = # differing bits; Hamming code min distance 3. Min distance t corrects ⌊(t−1)/2⌋ errors. Sphere packing; <b>perfect</b> code = spheres fully pack space.</li>
+<li><b>Source–channel separation</b>: optimal error-free comms of a process V over p(Y|X) is achieved by <b>separate</b> source code (compress to H) and channel code. Source coding: entropy = optimal compression; channel coding: MI = optimal transmission.</li>
+</ul>
+
+<h2>LECTURE 6 · PROBABILISTIC INFERENCE</h2>
+<ul>
+<li>Descriptive vs <b>inferential</b> stats (parameter estimation, hypothesis testing). <b>Frequentist</b>: true θ exists, behaviour over repeated experiments. <b>Bayesian</b>: beliefs about θ updated by data.</li>
+<li><b>NHST</b>: H₀ (null, “business as usual”) vs H₁; rejection region R: x∈R ⇒ reject H₀. <b>Simple</b>: θ=θ₀ (point); <b>composite</b>: θ∈Θ₀ (region); <b>nested</b>: H₀ fixes a parameter of H₁ (a=0 vs a≠0).</li>
+<li><b>Type I</b> (false positive) <span class="m">α = P(x∈R|H₀)</span>; <b>Type II</b> (false negative) <span class="m">β = P(x∉R|H₁)</span>; <b>power = 1−β</b>. Mnemonic: boy who cried wolf (I = cried wolf with none). Can only reject / fail to reject H₀ — never “accept”.</li>
+</ul>
+<span class="f">Neyman–Pearson lemma: for simple H₀:θ₀ vs H₁:θ₁, the most powerful test of size α rejects when Λ(x) = p<sub>θ₁</sub>(x)/p<sub>θ₀</sub>(x) &gt; k, with k s.t. p<sub>θ₀</sub>(x∈R)=α.</span>
+<ul>
+<li><b>Proof idea</b>: any R′ with same α: R\R′ and R′\R have equal H₀-probability φ; on R\R′ p<sub>θ₁</sub> &gt; kp<sub>θ₀</sub> (mass &gt; φk), on R′\R &lt; kp<sub>θ₀</sub> (&lt; φk) ⇒ p<sub>θ₁</sub>(R′) &lt; p<sub>θ₁</sub>(R): R′ has less power.</li>
+<li><b>Likelihood ratio (LRT)</b> <span class="f">Λ = sup<sub>θ∈Θ₁</sub> p<sub>θ</sub>(x) / sup<sub>θ∈Θ₀</sub> p<sub>θ</sub>(x); log Λ = log p<sub>θ₁*</sub>(x) − log p<sub>θ₀*</sub>(x)</span> optimal for simple H (N-P); for composite w/ monotone likelihood (Karlin–Rubin); otherwise often good, not always optimal. i.i.d.: log Λ = Σ[log p<sub>θ₁*</sub>(xᵢ)−log p<sub>θ₀*</sub>(xᵢ)] → nE[…]. log Λ = “evidence” for H₁ (frequentist). Mock exam 4: plug in MLEs of λ (exp: λ̂=1/x̄) and σ² (half-normal: σ̂²=<span class="m">x̄²</span>=mean of squares) into Σ log(q/p).</li>
+<li><b>MI as LR test</b> (H₀: p=f(x)g(y) vs H₁: joint): sup<sub>H₁</sub> log-lik = −nH(X,Y); sup<sub>H₀</sub> = −n(H(X)+H(Y)) (using E[log p<sub>θ</sub>] = −H − D<sub>KL</sub>). <span class="f">I(X;Y) = (1/n) E[log Λ] = E[log p(x,y)/(p(x)p(y))]</span> — MI = evidence for joint over factorised model.</li>
+</ul>
+<h3>Bayesian inference</h3>
+<span class="f">p(θ|D) = p(D|θ)p(θ)/p(D) &nbsp;(posterior = likelihood × prior / evidence) <br>Evidence p(D) = ∫ p(D|θ)p(θ)dθ = E<sub>p(θ)</sub>[p(D|θ)] &nbsp; (“replace sups with sums”)</span>
+<ul>
+<li>Prediction: p(D′|D) = ∫p(D′|θ)p(θ|D)dθ (D−θ−D′ Markov chain). <b>MAP</b>: θ = argmax p(D|θ)p(θ). Posterior = inverse probability problem.</li>
+<li>Gaussian mean (known σ², prior N(µ₀,σ₀²)): <span class="m">µ₁ = (σ₀²x + σ²µ₀)/(σ₀²+σ²), &nbsp;1/σ₁² = 1/σ₀² + 1/σ²</span>.</li>
+<li><b>Bayes factor</b> <span class="f">BF = p(D|H₁)/p(D|H₀); posterior odds p(H₁|D)/p(H₀|D) = BF × p(H₁)/p(H₀)</span> BF≫1 for H₁, ≈1 inconclusive, ≪1 for H₀ (can support either). p(H|D)=p(D|H)p(H)/p(D), p(D)=Σp(D|Hᵢ)p(Hᵢ).</li>
+<li>Coins: H₀:q=½ ⇒ p(D|H₀)=2<sup>−n</sup>; H₁:q~U(0,1) ⇒ p(D|H₁)=∫q<sup>h</sup>(1−q)<sup>n−h</sup>dq = h!(n−h)!/(n+1)!; BF = h!(n−h)!2<sup>n</sup>/(n+1)!. Short n inconclusive; h/n≈½ ⇒ BF→0.</li>
+<li><b>Occam’s razor</b>: p(D|H) ≈ p(D|w<sub>MP</sub>,H) × σ<sub>w|D</sub>/σ<sub>w</sub> = <b>best-fit likelihood × Occam factor</b> (low if big prior range but data fits tiny part: flexible models are penalised).</li>
+<li><b>MDL</b> (Shannon’s razor): L(D) = L(Hᵢ) + L(w*|Hᵢ) + L(D|w*,Hᵢ). Simple H₁: short params, poor fit; complex H₃: opposite; H₂ best tradeoff.</li>
+</ul>
+
+<h2>LECTURE 7 · ESTIMATING INFORMATION</h2>
+<ul>
+<li>Entropy needs p(x) but we only have samples ⇒ <b>density estimation</b>: data → p̂(x) → plug into information formula.</li>
+</ul>
+<table class="sm"><tr><th>Method</th><th>Idea</th><th>Notes</th></tr>
+<tr><td><b>0 Plug-in</b> (discrete)</td><td>p̂(xⱼ)=count/total → −Σp̂ log p̂</td><td>binning continuous data usually bad</td></tr>
+<tr><td><b>I Parametric</b></td><td>fit q<sub>θ</sub> (θ*=argmax q<sub>θ</sub>(xⁿ)), analytic info of fit, e.g. ½ln|2πeΣ|</td><td>“garbage in, garbage out”: Gaussian fit gives I=0 (Σ=I) for dependent non-Gaussian data; can bound H, I</td></tr>
+<tr><td><b>II Non-parametric</b></td><td>Fit q (e.g. kernel), then H=−E<sub>p</sub>[log q(x)] on the data. KDE: q(x)=(1/n)ΣK<sub>h</sub>(x−xᵢ), K<sub>h</sub>=(2πh²)<sup>−½</sup>e<sup>−(x−xᵢ)²/2h²</sup></td><td>pick h by cross-validation; k-NN (Kraskov): adaptive width, area A with K neighbours, locally uniform — more accurate</td></tr>
+<tr><td><b>III Variational</b></td><td>estimation → optimisation: H=max<sub>θ</sub> Ĥ<sub>θ</sub>(xⁿ)</td><td>scalable, deep learning</td></tr></table>
+<ul>
+<li><b>Variational MI (predictor, Barber–Agakov)</b>: <span class="f">I(X;Y) ≥ H(Y) + (1/n)Σ log q<sub>θ</sub>(yᵢ|xᵢ)</span> (Gibbs; any q<sub>θ</sub>, e.g. N(y;f<sub>θ</sub>(x),σ²)); good when Y low-dim/discrete.</li>
+<li><b>Contrastive (density ratio)</b>: positives (xᵢ,yᵢ)~p(x,y), negatives from p(x)p(y) (random pairing); train classifier f<sub>θ</sub>; <span class="m">I ≥ L<sub>CE</sub></span>; optimal f = p(x,y)/(p(x)p(y)).</li>
+<li><b>Bias</b> = ⟨Î⟩−I; <b>Variance</b> = ⟨(Î−⟨Î⟩)²⟩; both worsen with limited data; estimators trade them off. Cheaper methods make more assumptions.</li>
+<li><b>Hypothesis testing in practice</b>: statistic T(x); <b>sufficient</b> if θ−T−X Markov chain (e.g. Λ, Î). R={x: T(x)&gt;k}. Q1 significance testing; Q2 power analysis.</li>
+<li><b>p-value</b> = P(T ≥ observed | H₀); significant at level α if p&lt;α (usual 0.05). Null distribution p<sub>θ₀</sub>(T=t); critical value α=∫<sub>t_crit</sub><sup>∞</sup>p<sub>θ₀</sub>(t)dt. Report more than just p-values! <b>Wilks</b>: 2logΛ → χ² as n→∞ (finite n hard analytically).</li>
+<li><b>Surrogate data</b>: sample the null empirically by generating fake data where H₀ holds, removing only the property tested. Independence test: ① compute Î(X;Y); ② shuffle Y→Y<sup>S</sup>; ③ Î(X;Y<sup>S</sup>) for many shuffles; ④ <span class="m">p = #{Î(X;Y<sup>S</sup>) ≥ Î(X;Y)} / #surrogates</span>. Triplet: statistic (MI) + null (X⊥Y) + surrogate (shuffle).</li>
+<li><b>Power analysis</b>: sample size needed for effect; power=1−β=P(x∈R|H₁) (true-positive rate). Simulate: pick n &amp; µ&gt;0 under H₁, draw n samples, run NHST at α, repeat M times ⇒ power = fraction rejected. Power ↑ with n and effect size. Analytic via CDF/inverse CDF; info quantities ~ non-central χ²(λ). <b>Bias estimation</b>: fit p(x,y) to data → ground-truth I → draw M datasets of size n → Î → compare.</li>
+</ul>
+
+<h2>LECTURE 8 · INFORMATION GEOMETRY</h2>
+<ul>
+<li><b>Manifold</b>: locally like ℝⁿ; small steps ds²=dxᵀg(x)dx with metric g (polar: g=diag(1,r²)). Euclid: s²=zᵀGz, G=I. <b>Statistical manifold</b>: points = PDFs; same manifold, different coordinates (variance vs precision Λ=Σ⁻¹).</li>
+<li><b>Divergence</b> D: ① D(p,q)≥0; ② D=0 iff p=q; ③ D(p,p+dp) positive-definite quadratic form. KL satisfies all (others: Bregman, f-divergences).</li>
+<li><b>Projection</b>: idempotent P=P∘P (Euclid: Proj v = argmin‖v−w‖²).</li>
+</ul>
+<span class="f">I-projection: q*<sub>I</sub> = argmin<sub>q∈Q</sub> D<sub>KL</sub>(q‖p) (zero-forcing; E wrt q — approximate complex p by simple q) <br>M-projection: q*<sub>M</sub> = argmin<sub>q∈Q</sub> D<sub>KL</sub>(p‖q) (zero-avoiding; E wrt p — real data)</span>
+<ul>
+<li><b>MLE = M-projection</b>: D(p‖q) = −H(p) − E_p[log q] ≈ −H(p) − (1/n)Σ log q(xᵢ).</li>
+<li><b>MI = M-projection</b> onto factorisable F={q: q(x|y)=q(x)}: <span class="f">I(X;Y) = min<sub>q∈F</sub> D<sub>KL</sub>(p‖q)</span> (min at f=p(x), g=p(y) by Gibbs ⇒ −H(X,Y)+H(X)+H(Y)). Cond. MI: M-proj onto C={q(x|y,z)=q(x|z)}: I(X;Y|Z).</li>
+<li><span class="f">Pythagoras: r = M-proj of p on Q, q∈Q ⇒ D(p‖q) = D(p‖r) + D(r‖q)</span> (also I-proj; needs “dually flat” Q). Applied to F⊂C ⇒ I(X;Y,Z)=I(X;Y|Z)+I(X;Z) (= <b>MI chain rule</b>).</li>
+<li><b>Max-entropy principle</b> (Jaynes): given E[fᵢ(X)]=αᵢ, choose max H subject to them. Lagrange: ℒ=−Σp log p+Σλᵢ(Σp fᵢ−αᵢ) ⇒ <span class="f">p(x) = (1/Z) exp(−Σᵢ λᵢ fᵢ(x)) &nbsp;(exponential family)</span> λ set s.t. constraints hold. Maxent = <b>I-projection of uniform u</b> on Q={E_q[fᵢ]=αᵢ} (D(q‖u)=−H(q)+log u). More constraints ⇒ H(q₂*) ≤ H(q₁*).</li>
+<li><b>Fisher information</b>: D(θ‖θ+dθ) ≈ ½dθᵀ I(θ) dθ (offset & 1st derivative vanish by Gibbs). <span class="f">I(θ) = −E[∂² log p<sub>θ</sub>(X)/∂θ²] = Var(score) = E[(∂ log p<sub>θ</sub>/∂θ)²], score = ∂ log p<sub>θ</sub>/∂θ</span> Vector: I<sub>jk</sub> = −E[∂²log p/∂θⱼ∂θₖ] (Hessian) — natural metric; high I = sharp likelihood peak, KL grows fast. Gaussian (µ,σ): <span class="m">I = diag(σ⁻², 2σ⁻²)</span>.</li>
+<li><b>Bias–variance</b>: MSE(θ̂)=E[(θ−θ̂)²]=<b>Bias² + Var</b> (cross term vanishes since E[θ̂−E θ̂]=0). <span class="f">Cramér–Rao: MSE(θ̂) ≥ b(θ)² + (1+b′(θ))²/I(θ)</span> (b = bias). More curved p<sub>θ</sub> ⇒ easier estimation.</li>
+<li><b>Wrap-up</b>: same formulae derived 3 ways — optimal communication, optimal hypothesis tests, projections on manifolds. Info theory sets limits of what is possible in ML.</li>
+</ul>
+</div></div>
+</body></html>

@@ -1,0 +1,10 @@
+[18:18:41] START attempt 2026-11-04_18-18-34; read rules
+[18:18:41] extracted text with pdftotext
+[18:19:06] extracted text with PyMuPDF (venv in scratchpad)
+[18:19:17] read mock exam + L1
+[18:19:22] read L2, L3
+[18:19:30] read L4, L5
+[18:21:01] read L5-L8 (all lectures). Plan: HTML->Chrome headless PDF, 2 A4 pages (p1: L1-4, p2: L5-8), 2 cols, 7.4pt, B/W; tune to fill
+[18:21:01] wrote cheatsheet.html (first draft, all 8 lectures)
+[18:21:55] rendered v1 via Chrome headless: 2 pages A4 but ~25% free space/page; adding worked examples + extra content
+[18:22:51] added worked examples (mock exam Q1,Q3,Q4,Q2), tuned line-height 1.24; final: 2 pages A4 (595x842pt), p1=L1-L4, p2=L5-L8, 7.4pt, B/W. DONE -> outputs/2026-11-04_18-18-34/cheatsheet.pdf

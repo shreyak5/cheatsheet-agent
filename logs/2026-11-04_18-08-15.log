@@ -1,0 +1,15 @@
+[18:08:18] START attempt 2026-11-04_18-08-15; read rules + listed materials (did not read outputs/)
+[18:08:34] extracted text from PDFs via pypdf into scratchpad
+[18:08:42] read mock exam + L1 (L0 file)
+[18:08:54] read L2 (Entropy); reading L3 Symbol Codes
+[18:09:09] read L3 Symbol Codes part1; continuing
+[18:09:13] finished L3 (file L2); reading L4 Joint Entropy (file L3)
+[18:09:18] read L4 mostly; reading rest + L5 Channel Codes (file L4)
+[18:09:26] read L5 first part; reading remainder + L6 (file L5)
+[18:09:30] read L5 + L6 first part; reading L6 rest + L7 (file L6)
+[18:09:33] read L6 Prob Inference; reading L7 Estimating Info (file L6)
+[18:09:38] read L7; reading L8 Info Geometry (file L7)
+[18:11:36] finished reading all 8 lectures + mock exam. Plan: HTML (2 explicit A4 pages, 2 cols, B&W) -> headless Chrome PDF; p1 = L1-L4, p2 = L5-L8. Mock exam topics: entropy, Shannon lengths/Kraft, SCT, estimators, MI lower bound, channel capacity (Z channel), NP lemma/LLR
+[18:11:36] wrote HTML source (scratchpad/build/cs.html)
+[18:12:28] first render OK (2xA4) but ~25% empty; tuning font size to fill
+[18:13:02] tuned per-page font (8.3pt side1, 7.4pt side2; fill ~97%); final PDF written to outputs/2026-11-04_18-08-15/cheatsheet.pdf; verified 2 pages A4, lectures 1-4 / 5-8 in order. Source HTML copied alongside.
