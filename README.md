@@ -9,14 +9,15 @@
 - Output: 2-page, double-sided, A4 PDF
 - One section per lecture, in order
 
-## How it works
+## How to use it
 
-- The prompt in `instructions/initial-prompt.txt` was given to Claude Code
-- The agent used the tools the Claude Code harness provides in the workspace:
+- Put all relevant course materials in `context/course_materials/`
+- Give the prompt from `instructions/initial-prompt.txt` to a Claude Code session in the current project's directory.
+- The agent uses the tools the Claude Code harness provides in the workspace:
   - **Bash**
   - **Read**
   - **Edit**
-- It read the lectures and mock exam, followed `context/cheatsheet_rules.txt`, and generated the PDF
+- It reads the course materials, follows `context/cheatsheet_rules.txt`, and generates a PDF of the cheatsheet.
 
 ## Structure
 
