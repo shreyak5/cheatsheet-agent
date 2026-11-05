@@ -1,11 +1,11 @@
 # cheatsheet-agent
 
-- Built as part of the Mercor **"Introduction to Agents"** course
+- A simple agent built as part of the Mercor **"Introduction to Agents"** course
 - Certification: https://work.mercor.com/learn/verify/MRC-2026-4553CYUD
 
 ## Purpose
 
-- Create an exam cheatsheet from course materials
+- To an exam cheatsheet from course materials like lecture slides and mock exams.
 - Output: 2-page, double-sided, A4 PDF
 - One section per lecture, in order
 
